@@ -31,7 +31,7 @@ export default {
     };
   },
   async created() {
-    store.state.students = (await axios.get('http://localhost:3000/students')).data;
+    // store.state.students = (await axios.get('http://localhost:3000/students')).data;
   }
 };
 </script>
