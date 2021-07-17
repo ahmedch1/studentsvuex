@@ -18,14 +18,18 @@ export default new Vuex.Store({
         setStudents(state, students) {
             state.students = students;
         },
-        addStudent(state,student){
+        addStudent(state, student) {
             state.students.push(student);
         }
     },
-    actions:{
-        async getStudents(context){
-            let students= (await axios.get('http://localhost:3000/students')).data;
-            context.commit('setStudents',students);
+    actions: {
+        async getStudents(context) {
+            const students = (await axios.get('http://localhost:3000/students')).data;
+            context.commit('setStudents', students);
+        },
+        async createStudent(context, names) {
+            const student = (await axios.post("http://localhost:3000/students", names)).data;
+            context.commit('addStudent', student);
         }
     }
 })
