@@ -11,6 +11,11 @@ export default new Vuex.Store({
             ...s, fullName: s.firstName + ' ' + s.lastName
         })),
         findStudent: state => id => state.students.find(s => s.id == id),
-        isLoaded:state=>!!state.students.length
+        isLoaded: state => !!state.students.length
+    },
+    mutations: {
+        setStudents(state, students) {
+            state.students = students;
+        }
     }
 })
