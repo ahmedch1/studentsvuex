@@ -32,7 +32,7 @@ export default {
   },
   async created() {
     let students= (await axios.get('http://localhost:3000/students')).data;
-    this.store.commit('setStudents',students );
+    this.$store.commit('setStudents',students );
   }
 };
 </script>
