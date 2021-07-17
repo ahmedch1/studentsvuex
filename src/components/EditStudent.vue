@@ -1,12 +1,19 @@
 <template>
-  <div v-if="$store.getters.isLoaded">
+  <div>
     <v-flex sm8 offset-sm2>
-      {{}}
       <v-card>
         <v-toolbar dark>
           <v-toolbar-title>Edit Student</v-toolbar-title>
         </v-toolbar>
-        <v-form>
+        <v-container class="text-xs-center">
+          <v-progress-circular v-if="!$store.getters.isLoaded"
+                               :size="70"
+                               :width="7"
+                               color="purple"
+                               indeterminate
+          ></v-progress-circular>
+        </v-container>
+        <v-form v-if="$store.getters.isLoaded">
           <v-container>
             <v-layout>
               <v-flex xs12 md4>
