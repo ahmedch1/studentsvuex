@@ -3,6 +3,19 @@ import Vue from 'vue';
 import axios from "axios";
 
 Vue.use(Vuex);
+const errorSystem = {
+    state: {
+        show: false,
+        text: 'Error'
+    },
+    mutations: {
+        showError(state, message) {
+            state.show = true;
+            state.errorText = message;
+        }
+    }
+}
+
 export default new Vuex.Store({
     state: {
         students: []
@@ -21,25 +34,34 @@ export default new Vuex.Store({
         addStudent(state, student) {
             state.students.push(student);
         },
-        editStudent(state,student){
-            const index= state.students.findIndex(s=>s.id==student.id);
-            state.students[index]=student;
-            Vue.set(state.students,index,student);
-        }
+        editStudent(state, student) {
+            const index = state.students.findIndex(s => s.id == student.id);
+            state.students[index] = student;
+            Vue.set(state.students, index, student);
+        },
+
     },
     actions: {
         async getStudents(context) {
-            const students = (await axios.get('http://localhost:3000/students')).data;
-            context.commit('setStudents', students);
+            try {
+                const students = (await axios.get('http://localhost:3000/students')).data;
+                context.commit('setStudents', students);
+            } catch (error) {
+                context.commit('showError', error);
+            }
+
         },
         async createStudent(context, names) {
             const student = (await axios.post("http://localhost:3000/students", names)).data;
             context.commit('addStudent', student);
         },
-        async editStudent(context,{id, names}) {
-           const student= (await axios.put(`http://localhost:3000/students/${id}`, names)).data;
-           context.commit('editStudent',student);
+        async editStudent(context, {id, names}) {
+            const student = (await axios.put(`http://localhost:3000/students/${id}`, names)).data;
+            context.commit('editStudent', student);
 
         }
+    },
+    modules:{
+        error:errorSystem
     }
 })
