@@ -5,22 +5,22 @@
         <v-toolbar dark>
           <v-toolbar-title>Edit Student</v-toolbar-title>
         </v-toolbar>
+
         <v-container class="text-xs-center">
-          <v-progress-circular v-if="!isLoaded"
-                               :size="70"
-                               :width="7"
-                               color="purple"
-                               indeterminate
+          <v-progress-circular
+              v-if="!isLoaded"
+              :size="70"
+              :width="7"
+              color="purple"
+              indeterminate
           ></v-progress-circular>
         </v-container>
-        <v-form v-if="isLoaded">
+        <v-form  v-if="isLoaded">
           <v-container>
             <v-layout>
               <v-flex xs12 md4>
-                <v-text-field v-model="findStudent($route.params.id).firstName" label="First Name"
-                              required></v-text-field>
-                <v-text-field v-model="findStudent($route.params.id).lastName" label="Last Name"
-                              required></v-text-field>
+                <v-text-field @input="updateFirstName" :value="findStudent($route.params.id).firstName" label="First Name" required></v-text-field>
+                <v-text-field @input="updateLastName" :value="findStudent($route.params.id).lastName" label="Last Name" required></v-text-field>
               </v-flex>
             </v-layout>
           </v-container>
@@ -36,19 +36,16 @@
 <script>
 import axios from "axios";
 import Students from "./Students";
-import {mapGetters} from 'vuex';
+import { mapGetters } from 'vuex';
 
 export default {
   data() {
     return {
-      student: ""
+      firstName: '',
+      lastName: ''
     };
   },
-  created() {
-    this.student = this.$store.getters.findStudent(this.$route.params.id);
-  },
   computed: {
-
     ...mapGetters([
       'isLoaded',
       'findStudent'
@@ -56,10 +53,19 @@ export default {
   },
   methods: {
     async submit() {
-      axios.put(`http://localhost:3000/students/${this.$route.params.id}`, {
-        firstName: this.student.firstName,
-        lastName: this.student.lastName
-      });
+
+      const student = this.findStudent(this.$route.params.id);
+
+      const firstName = this.firstName || student.firstName;
+      const lastName = this.lastName || student.lastName;
+
+      this.$store.dispatch('editStudent', { id: this.$route.params.id, names: { firstName, lastName } });
+    },
+    updateFirstName (e) {
+      this.firstName = e;
+    },
+    updateLastName (e) {
+      this.lastName = e;
     }
   },
   components: {
